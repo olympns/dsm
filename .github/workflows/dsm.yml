@@ -1,0 +1,29 @@
+name: DSM
+
+on:
+  schedule:
+    - cron: '30 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  create-dsm-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: yarn install
+        
+      - name: Create daily DSM issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.DSM_TOKEN }}
+        run: yarn dsm

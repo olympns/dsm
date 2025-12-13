@@ -1,9 +1,13 @@
 {
-  "name": "demo-repo",
-  "version": "0.2.0",
-  "description": "A sample package.json",
+  "name": "dsm",
+  "version": "1.0.0",
+  "description": "Discord Server Manager",
+  "main": "scripts/dsm.js",
+  "scripts": {
+    "dsm": "node scripts/dsm.js"
+  },
   "dependencies": {
-    "@primer/css": "17.0.1"
+    "@octokit/rest": "^19.0.0"
   },
   "license": "MIT"
 }
