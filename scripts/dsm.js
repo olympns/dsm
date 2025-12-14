@@ -48,6 +48,15 @@ async function createDailyDSM() {
     body,
     labels: [DSM_LABEL],
   });
+  
+  const assigneeLogins = members.map(member => member.login);
+  
+  await octokit.rest.issues.addAssignees({
+    owner: REPO_OWNER,
+    repo: REPO_NAME,
+    issue_number: newIssue.number,
+    assignees: assigneeLogins,
+  });
 
   return newIssue;
 }
