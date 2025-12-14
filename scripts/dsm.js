@@ -12,7 +12,7 @@ const DSM_LABEL = 'DSM';
 async function createDailyDSM() {
   const now = new Date();
   const dateStr = now.toDateString();
-  const title = [DSM] ${dateStr};
+  const title = `[DSM] ${dateStr}`;
 
   const { data: members } = await octokit.rest.orgs.listMembers({
     org: REPO_OWNER,
