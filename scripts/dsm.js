@@ -7,28 +7,30 @@ const octokit = new Octokit({
 
 const REPO_OWNER = 'olympns';
 const REPO_NAME = 'dsm';
+const DSM_LABEL = 'DSM';
 
 async function createDailyDSM() {
   const now = new Date();
   const dateStr = now.toDateString();
-  const title = `[DSM] ${dateStr}`;
-  
+  const title = [DSM] ${dateStr};
+
   const { data: members } = await octokit.rest.orgs.listMembers({
     org: REPO_OWNER,
   });
-  
+
   const mentions = members.map(member => `@${member.login}`).join(' ');
+
   const template = fs.readFileSync('templates/template.md', 'utf8');
   const body = template.replace('{{mentions}}', mentions);
 
-  const openIssues = await octokit.rest.issues.listForRepo({
+  const { data: openIssues } = await octokit.rest.issues.listForRepo({
     owner: REPO_OWNER,
     repo: REPO_NAME,
     state: 'open',
-    labels: 'DSM',
+    labels: DSM_LABEL,
   });
 
-  for (const issue of openIssues.data) {
+  for (const issue of openIssues) {
     if (issue.title.startsWith('[DSM]')) {
       await octokit.rest.issues.update({
         owner: REPO_OWNER,
@@ -39,19 +41,22 @@ async function createDailyDSM() {
     }
   }
 
-  const newIssue = await octokit.rest.issues.create({
+  const { data: newIssue } = await octokit.rest.issues.create({
     owner: REPO_OWNER,
     repo: REPO_NAME,
-    title: title,
-    body: body,
-    labels: ['DSM'],
+    title,
+    body,
+    labels: [DSM_LABEL],
   });
 
-  return newIssue.data;
+  return newIssue;
 }
 
 if (require.main === module) {
-  createDailyDSM();
+  createDailyDSM().catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
 }
 
 module.exports = { createDailyDSM };
