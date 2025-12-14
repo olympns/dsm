@@ -23,7 +23,14 @@ jobs:
       - name: Install dependencies
         run: yarn install
         
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.DSM_APP_ID }}
+          private-key: ${{ secrets.DSM_PRIVATE_KEY }}
+        
       - name: Create daily DSM issue
         env:
-          GITHUB_TOKEN: ${{ secrets.DSM_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: yarn dsm
